@@ -24,3 +24,6 @@ main()
         console.log(err)
         process.exit(1)
     })
+
+
+// Smart Contract address : 0x6F555B64e6BbFE9a3Ed490817D8aA3443B1eD45f
