@@ -11,5 +11,6 @@ module.exports = {
       url:ALCHEMY_HTTP_URL,
       accounts: [PRIVATE_KEY]
     }
-  }
+  },
+  defaultNetwork: 'hardhat'
 };
