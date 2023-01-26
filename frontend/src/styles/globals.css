@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body{
+    padding: 0;
+    margin: 0;
+}
+
+.background{
+    @apply w-full h-screen font-body bg-background;
+}
+
+.navBarBtn{
+    @apply md:w-32 md:border-b-0 md:inline-block md:px-2 lg:inline-block  lg:mr-32 lg:w-fit   hover:bg-highlight hover:text-textColor hover:rounded-lg ;
+}
