@@ -1,15 +1,15 @@
 import { createContext,useCallback,useContext,useEffect,useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
-import {AvantgardeToken__factory} from "../contract/factories/AvantgardeToken__factory";
-import {AvantgardeToken} from "../contract/AvantgardeToken";
+import {AvantgardeToken__factory} from "../contract";
+import {AvantgardeToken} from "../contract";
 import { ethers } from "ethers";
 import { contractAddress } from "@/constants/contractAddress";
 
 
 type contractInterface = {
     getBalance: (accountToBeChecked: string) => Promise<void>,
-    balance : String,
+    balance : string,
     mint: (amount : string) => Promise<void>,
     setBalanceOnDiffPage: () => void,
     sendTokens: (receiverAddress : string,amount:string) => Promise<void>
@@ -23,7 +23,7 @@ const ContractProvider = ({children} : any) => {
     const provider = useSelector((state: RootState) => state.wallet.provider);
     const address = useSelector((state : RootState) => state.wallet.address);
 
-    const [balance,setBalance] = useState<String>("0");
+    const [balance,setBalance] = useState<string>("0");
     const [erc20,setERC20] = useState<AvantgardeToken>({} as AvantgardeToken);
     const [erc20_rw,setERC20_rw] = useState<AvantgardeToken>({} as AvantgardeToken);
     
@@ -44,15 +44,14 @@ const ContractProvider = ({children} : any) => {
     }
 
     const getBalance = useCallback(async(accountToBeChecked:string)=>{
-        console.log("detect-network",await signer.getAddress())
+        
+        // console.log(erc20)
         if(checkAccount(accountToBeChecked)){
-
             erc20.balanceOf(accountToBeChecked)
                 .then((response : ethers.BigNumber)=>{
                     setBalance(ethers.utils.formatEther(response));
                 })
                 .catch(err=>console.log("Balance error:",err));
-            console.log(balance)
         }
         else{
             window.alert("Wrong Address");
@@ -68,11 +67,11 @@ const ContractProvider = ({children} : any) => {
             window.alert("Enter a valid amount");
         }
         else{
-            const power: ethers.BigNumber = ethers.BigNumber.from("1000000000000000000");
+            const power = ethers.BigNumber.from("1000000000000000000");
             const amountBigNumber = ethers.BigNumber.from(amount).mul(power);
             
-            erc20_rw?.mintForAddress(address ,amountBigNumber)
-                .then(response => console.log("Success",response));
+            const trx = await erc20_rw.mintForAddress(address ,amountBigNumber);
+            await trx.
         }
     },[]);
 
@@ -90,8 +89,8 @@ const ContractProvider = ({children} : any) => {
             erc20_rw.transfer(receiverAddress,amountBigNumber)
                 .then(response => console.log(response))
                 .catch(err=>{
-                    console.log(err.error.data.message);
-                    window.alert(err.error.data.message);
+                    console.log(err);
+                    window.alert(err);
                 });
         }
         else{

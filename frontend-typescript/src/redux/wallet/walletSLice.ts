@@ -5,10 +5,10 @@ import store from "../store";
 
 
 export type walletState = {
-    address : String ,
+    address : string ,
     signer : Signer,
     provider: JsonRpcProvider,
-    error : String | undefined
+    error : string | undefined
 }
 
 const initialState : walletState = {
@@ -24,14 +24,16 @@ export const getNewSigner = createAsyncThunk("signer/getNewSigner",async (_,{rej
     const reduxStore = store.getState();
     const provider = reduxStore.wallet.provider;
 
-    if(provider === null){
+    if(Object.keys(provider).length === 0){
         window.alert("No wallet found");
         return rejectWithValue("No wallet found");
     }
     else{
-        // const walletAddress = await  window.ethereum?.request<String | undefined>({method: "eth_requestAccounts"})
+        await provider.send("eth_requestAccounts", []);
         const signer : Signer = provider.getSigner();
         const signerAddress = await signer.getAddress();
+
+        console.log(signer)
 
         return {
             signer,
@@ -43,11 +45,6 @@ export const getNewSigner = createAsyncThunk("signer/getNewSigner",async (_,{rej
 
 export const getNewProvider = createAsyncThunk("provider/getNewProvider",async ( _ ,{rejectWithValue}) => {
     
-    // console.log("hi")
-    
-    // const result = await ethers.utils.fetchJson("https://localhost:8545", '{ "id": 42, "jsonrpc": "2.0", "method": "eth_chainId", "params": [ ] }')
-    // console.log(result);
-
     const provider: Provider | null = new ethers.providers.Web3Provider(window.ethereum,"any");
     if(provider){
         const chainID = await window.ethereum?.request({method:'eth_chainId'});
